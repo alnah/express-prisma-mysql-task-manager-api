@@ -1,60 +1,70 @@
 import { PrismaClient } from "@prisma/client";
 
-import { RequestHandler } from "../types";
+import { RequestHandlerType } from "../types";
 import asyncWrapper from "../middlewares/async";
+import createCustomError from "../errors/custom-error";
 
 const prisma = new PrismaClient();
 
-const getTasks: RequestHandler = asyncWrapper(async (req, res, next) => {
+const getTasks: RequestHandlerType = asyncWrapper(async (req, res, next) => {
   const tasks = await prisma.task.findMany();
   return res.status(200).json(tasks);
 });
 
-const createTask: RequestHandler = asyncWrapper(async (req, res, next) => {
+const createTask: RequestHandlerType = asyncWrapper(async (req, res, next) => {
   const { name, completed } = req.body;
 
   if (!name || typeof name !== "string" || name.trim() === "") {
-    return res
-      .status(400)
-      .json({ error: "Invalid input: 'name' must be a non-empty string" });
+    return next(
+      createCustomError("Invalid input: 'name' must be a non-empty string", 400)
+    );
   }
 
   const task = await prisma.task.create({ data: { name, completed } });
   return res.status(201).json(task);
 });
 
-const getTask: RequestHandler = asyncWrapper(async (req, res, next) => {
+const getTask: RequestHandlerType = asyncWrapper(async (req, res, next) => {
   const { id } = req.params;
-
   const task = await prisma.task.findUnique({
     where: { id: Number(id) },
   });
-  if (!task) return res.status(404).json({ error: "Task not found" });
+  if (!task)
+    return next(createCustomError(`Task not found with id ${id}`, 404));
   return res.status(200).json(task);
 });
 
-const updateTask: RequestHandler = asyncWrapper(async (req, res, next) => {
+const updateTask: RequestHandlerType = asyncWrapper(async (req, res, next) => {
   const { id } = req.params;
-  const { name, completed } = req.body;
+  const taskExists = await prisma.task.findUnique({
+    where: { id: Number(id) },
+  });
+  if (!taskExists)
+    return next(createCustomError(`Task not found with id ${id}`, 404));
 
+  const { name, completed } = req.body;
   if (name !== undefined && (typeof name !== "string" || name.trim() === "")) {
-    return res
-      .status(400)
-      .json({ error: "Invalid input: 'name' must be a non-empty string" });
+    return next(
+      createCustomError("Invalid input: 'name' must be a non-empty string", 400)
+    );
   }
 
   const task = await prisma.task.update({
     where: { id: Number(id) },
     data: { name, completed },
   });
-  if (!task) return res.status(404).json({ error: "Task not found" });
   return res.status(200).json(task);
 });
 
-const deleteTask: RequestHandler = asyncWrapper(async (req, res, next) => {
+const deleteTask: RequestHandlerType = asyncWrapper(async (req, res, next) => {
   const { id } = req.params;
+  const taskExists = await prisma.task.findUnique({
+    where: { id: Number(id) },
+  });
+  if (!taskExists)
+    return next(createCustomError(`Task not found with id ${id}`, 404));
+
   const task = await prisma.task.delete({ where: { id: Number(id) } });
-  if (!task) return res.status(404).json({ error: "Task not found" });
   return res.status(200).json(task);
 });
 
