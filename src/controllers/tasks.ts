@@ -1,9 +1,7 @@
-import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
+import { RequestHandler } from "../types";
 
 const prisma = new PrismaClient();
-
-type RequestHandler = (req: Request, res: Response, next: NextFunction) => void;
 
 const getTasks: RequestHandler = async (req, res, next) => {
   try {
