@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 
 type RequestHandler = (req: Request, res: Response, next: NextFunction) => void;

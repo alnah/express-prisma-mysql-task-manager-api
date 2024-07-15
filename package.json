@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "clear && nodemon ./src/app.ts"
+    "start": "clear && nodemon ./src/app.ts",
+    "studio": "npx prisma studio --schema ./src/prisma/schema.prisma"
   },
   "repository": {
     "type": "git",
