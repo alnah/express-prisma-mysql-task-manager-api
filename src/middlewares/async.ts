@@ -1,7 +1,7 @@
-import { RequestHandler } from "../types";
+import { RequestHandlerType } from "../types";
 
 const asyncWrapper =
-  (callback: RequestHandler): RequestHandler =>
+  (callback: RequestHandlerType): RequestHandlerType =>
   (req, res, next) => {
     try {
       callback(req, res, next);
