@@ -1,5 +1,5 @@
 {
-  "name": "task-manager-express-prisma-rest-api",
+  "name": "express-prisma-mysql-task-manager-api",
   "version": "1.0.0",
   "description": "An Express.js app demonstrating RESTful API design and MySQL integration via Prisma.",
   "main": "app.js",
