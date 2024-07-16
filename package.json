@@ -1,7 +1,7 @@
 {
   "name": "task-manager-express-prisma-rest-api",
   "version": "1.0.0",
-  "description": "An Express.js app demonstratiting RESTful API design and MySQL integration.",
+  "description": "An Express.js app demonstrating RESTful API design and MySQL integration via Prisma.",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
